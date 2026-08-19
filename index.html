@@ -1,0 +1,103 @@
+{`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLOW</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#111827}
+.app{max-width:430px;margin:auto;min-height:100vh;padding:20px}
+.card{background:white;border-radius:24px;padding:24px;margin-top:20px;box-shadow:0 8px 30px rgba(0,0,0,.08)}
+h1{text-align:center;font-size:34px;margin:10px 0}
+p{text-align:center;color:#6b7280}
+.option{display:block;width:100%;padding:16px;margin:10px 0;border-radius:16px;border:2px solid #e5e7eb;background:white;font-size:16px}
+.option.active{border-color:#111827;background:#eef2ff}
+button.main{width:100%;padding:17px;border:0;border-radius:18px;background:#111827;color:white;font-size:17px;font-weight:bold;margin-top:16px}
+.hidden{display:none}
+.result{font-size:18px;line-height:1.6}
+.badge{display:inline-block;background:#e0f2fe;color:#075985;padding:8px 12px;border-radius:20px;margin:4px}
+.small{font-size:13px;color:#6b7280;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div id="screen1" class="card">
+<h1>FLOW</h1>
+<p>Less stress. More life.</p>
+<h3>How do you feel?</h3>
+<button class="option" onclick="pick('mood','stressed',this)">😫 Stressed</button>
+<button class="option" onclick="pick('mood','bored',this)">😐 Bored</button>
+<button class="option" onclick="pick('mood','happy',this)">😁 Happy</button>
+<button class="main" onclick="next(1)">Continue</button>
+</div>
+
+<div id="screen2" class="card hidden">
+<h3>How much free time?</h3>
+<button class="option" onclick="pick('time','10',this)">10 minutes</button>
+<button class="option" onclick="pick('time','20',this)">20 minutes</button>
+<button class="option" onclick="pick('time','60',this)">1 hour</button>
+<button class="main" onclick="next(2)">Continue</button>
+</div>
+
+<div id="screen3" class="card hidden">
+<h3>Who are you with?</h3>
+<button class="option" onclick="pick('with','alone',this)">🙋 Alone</button>
+<button class="option" onclick="pick('with','friends',this)">👬 Friends</button>
+<button class="option" onclick="pick('with','family',this)">👨‍👩‍👧 Family</button>
+<button class="main" onclick="next(3)">Generate My Flow</button>
+</div>
+
+<div id="screen4" class="card hidden">
+<h1>Your FLOW ✨</h1>
+<div id="output" class="result"></div>
+<button class="main" onclick="shareFlow()">Share with a friend</button>
+<p class="small">Made with FLOW Prototype V0</p>
+</div>
+
+</div>
+
+<script>
+let data={mood:'',time:'',with:''};
+
+function pick(key,val,btn){
+ data[key]=val;
+ [...btn.parentElement.querySelectorAll('.option')].forEach(b=>b.classList.remove('active'));
+ btn.classList.add('active');
+}
+
+function next(n){
+ if(n===1 && !data.mood)return alert('Choose your mood');
+ if(n===2 && !data.time)return alert('Choose your time');
+ if(n===3 && !data.with)return alert('Choose who you are with');
+ document.getElementById('screen'+n).classList.add('hidden');
+ document.getElementById('screen'+(n+1)).classList.remove('hidden');
+ if(n===3) generate();
+}
+
+function generate(){
+ let text='';
+ if(data.mood==='stressed')
+   text='Take a deep reset. Put your phone away for '+data.time+' minutes and enjoy a peaceful mini challenge.';
+ if(data.mood==='bored')
+   text='Your mission: create the funniest memory possible in '+data.time+' minutes.';
+ if(data.mood==='happy')
+   text='Turn your good mood into an unforgettable moment with '+data.time+' minutes of fun.';
+ text+='<br><br><b>Best with:</b> '+data.with;
+ text+='<br><br><span class="badge">Personalized Experience</span>';
+ document.getElementById('output').innerHTML=text;
+ localStorage.setItem('lastFlow',JSON.stringify(data));
+}
+
+function shareFlow(){
+ const msg='I tried FLOW! It created a personalized experience for me. Try this prototype.';
+ if(navigator.share){
+   navigator.share({title:'FLOW',text:msg,url:location.href});
+ }else{
+   navigator.clipboard.writeText(location.href);
+   alert('Link copied!');
+ }
+}
+</script>
+</body>
+</html>`}
